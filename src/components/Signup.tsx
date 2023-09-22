@@ -17,6 +17,7 @@ const Signup = () => {
   const { setAuthStatus } = useAuth();
 
   const create = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
       const userData = await appwriteService.createUserAccount(formData);
       if (userData) {
