@@ -12,6 +12,17 @@ type LoginUserAccount = {
   password: string;
 };
 
+const errorHandler = (error: unknown) => {
+  let message = "Unknown Error";
+  if (error instanceof Error) {
+    message = error.message;
+  } else {
+    message = String(error);
+  }
+  console.log(message);
+  throw error;
+};
+
 const appwriteClient = new Client();
 
 appwriteClient.setEndpoint(conf.appwriteUrl).setProject(conf.appwriteProjectId);
@@ -33,22 +44,46 @@ export class AppwriteService {
         return userAccount;
       }
     } catch (error) {
-      let message = "Unknown Error";
-      if (error instanceof Error) {
-        message = error.message;
-        console.log(error.message);
-      } else {
-        message = String(error);
-      }
-      throw error;
+      errorHandler(error);
     }
   }
+
   async login({ email, password }: LoginUserAccount) {
     try {
-    } catch (error) {}
+      return await account.createEmailSession(email, password);
+    } catch (error) {
+      errorHandler(error);
+    }
   }
 
-  async isLoggedIn() {}
-  async getCurrentUser() {}
-  async logout() {}
+  async isLoggedIn(): Promise<boolean> {
+    try {
+      const data = await this.getCurrentUser();
+      return Boolean(data);
+    } catch (error) {
+      errorHandler(error);
+    }
+    return false;
+  }
+
+  async getCurrentUser() {
+    try {
+      return account.get();
+    } catch (error) {
+      errorHandler(error);
+    }
+    return null;
+  }
+
+  async logout() {
+    try {
+      return await account.deleteSession("current");
+    } catch (error) {
+      errorHandler(error);
+    }
+  }
 }
+
+const appwriteService = new AppwriteService();
+
+export default appwriteService;
