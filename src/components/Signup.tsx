@@ -16,7 +16,7 @@ const Signup = () => {
   const [error, setError] = useState("");
   const { setAuthStatus } = useAuth();
 
-  const create = async (e: FormEvent<HTMLFormElement>) => {
+  const createUserHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const userData = await appwriteService.createUserAccount(formData);
@@ -56,7 +56,7 @@ const Signup = () => {
           </Link>
         </p>
         {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
-        <form onSubmit={create} className="mt-8">
+        <form onSubmit={createUserHandler} className="mt-8">
           <div className="space-y-5">
             <div>
               <label
