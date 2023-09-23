@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import appwriteService from "@/appwrite/config";
 import useAuth from "@/context/useAuth";
 import Image from "next/image";
+import getErrorMessage from "@/util/getErrorMessage";
 
 const Signup = () => {
   const router = useRouter();
@@ -25,12 +26,7 @@ const Signup = () => {
         router.push("/profile");
       }
     } catch (error) {
-      let message = "Unknown Error";
-      if (error instanceof Error) {
-        message = error.message;
-      } else {
-        message = String(error);
-      }
+      const message = getErrorMessage(error);
       setError(message);
     }
   };

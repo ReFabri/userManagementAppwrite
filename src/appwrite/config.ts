@@ -1,5 +1,6 @@
 import conf from "@/conf/config";
 import { Client, Account, ID } from "appwrite";
+import getErrorMessage from "@/util/getErrorMessage";
 
 type CreateUserAccount = {
   name: string;
@@ -10,17 +11,6 @@ type CreateUserAccount = {
 type LoginUserAccount = {
   email: string;
   password: string;
-};
-
-const errorHandler = (error: unknown) => {
-  let message = "Unknown Error";
-  if (error instanceof Error) {
-    message = error.message;
-  } else {
-    message = String(error);
-  }
-  console.log(message);
-  throw error;
 };
 
 const appwriteClient = new Client();
@@ -44,7 +34,8 @@ export class AppwriteService {
         return userAccount;
       }
     } catch (error) {
-      errorHandler(error);
+      console.log(getErrorMessage(error));
+      throw error;
     }
   }
 
@@ -52,7 +43,8 @@ export class AppwriteService {
     try {
       return await account.createEmailSession(email, password);
     } catch (error) {
-      errorHandler(error);
+      console.log(getErrorMessage(error));
+      throw error;
     }
   }
 
@@ -61,7 +53,8 @@ export class AppwriteService {
       const data = await this.getCurrentUser();
       return Boolean(data);
     } catch (error) {
-      errorHandler(error);
+      console.log(getErrorMessage(error));
+      throw error;
     }
     return false;
   }
@@ -70,7 +63,8 @@ export class AppwriteService {
     try {
       return account.get();
     } catch (error) {
-      errorHandler(error);
+      console.log(getErrorMessage(error));
+      throw error;
     }
     return null;
   }
@@ -79,7 +73,8 @@ export class AppwriteService {
     try {
       return await account.deleteSession("current");
     } catch (error) {
-      errorHandler(error);
+      console.log(getErrorMessage(error));
+      throw error;
     }
   }
 }
